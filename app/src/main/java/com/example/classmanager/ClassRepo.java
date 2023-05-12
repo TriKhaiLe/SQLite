@@ -40,7 +40,6 @@ public class ClassRepo extends SQLiteOpenHelper {
 
     public ClassRepo(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        mDatabase = getWritableDatabase();
     }
 
     public static synchronized ClassRepo getInstance(Context context) {
@@ -57,6 +56,7 @@ public class ClassRepo extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_TABLE_CLASS);
         db.execSQL(SQL_CREATE_TABLE_STUDENT);
 
+        mDatabase = getWritableDatabase();
         generateUsers();
         generateClasses();
         generateStudents();
@@ -64,8 +64,8 @@ public class ClassRepo extends SQLiteOpenHelper {
     }
 
     private void generateStudents() {
-        if(!isTableEmpty(mDatabase, "STUDENT"))
-            return;
+//        if(!isTableEmpty(mDatabase, "STUDENT"))
+//            return;
 
         ContentValues values = new ContentValues();
         for (int i = 0; i < 15; i++){
@@ -113,7 +113,7 @@ public class ClassRepo extends SQLiteOpenHelper {
     }
 
     private void generateClasses() {
-        if(isTableEmpty(mDatabase, "CLASS")){
+//        if(isTableEmpty(mDatabase, "CLASS")){
             ContentValues values = new ContentValues();
             values.putNull("classid");
             values.put("classname", "KTPM2021");
@@ -137,7 +137,7 @@ public class ClassRepo extends SQLiteOpenHelper {
             values.put("classname", "TMDT2021");
             values.put("students", 0);
             mDatabase.insert("CLASS", null, values);
-        }
+//        }
     }
 
     @Override
@@ -151,8 +151,8 @@ public class ClassRepo extends SQLiteOpenHelper {
         userList.add(new User("admin", "121212"));
         userList.add(new User("student", "121212"));
 
-        if(!isTableEmpty(mDatabase, "USER"))
-            return;
+//        if(!isTableEmpty(mDatabase, "USER"))
+//            return;
 
         ContentValues values = new ContentValues();
 
@@ -183,8 +183,6 @@ public class ClassRepo extends SQLiteOpenHelper {
     }
 
     public boolean isTableEmpty(SQLiteDatabase db, String tableName) {
-
-
         String query = "SELECT COUNT(*) FROM " + tableName;
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
