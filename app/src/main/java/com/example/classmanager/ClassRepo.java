@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,12 +35,12 @@ public class ClassRepo extends SQLiteOpenHelper {
             "foreign key (classid) references CLASS (classid) " +
             ")";
     private static ClassRepo instance;
-    private SQLiteDatabase mDatabase;
-
+    private Context context;
     ArrayList<User> userList;
 
     public ClassRepo(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     public static synchronized ClassRepo getInstance(Context context) {
@@ -56,16 +57,15 @@ public class ClassRepo extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_TABLE_CLASS);
         db.execSQL(SQL_CREATE_TABLE_STUDENT);
 
-        mDatabase = getWritableDatabase();
-        generateUsers();
-        generateClasses();
-        generateStudents();
-        updateClassStudentCount();
+        generateUsers(db);
+        generateClasses(db);
+        generateStudents(db);
+        updateClassStudentCount(db);
     }
 
-    private void generateStudents() {
-//        if(!isTableEmpty(mDatabase, "STUDENT"))
-//            return;
+    private void generateStudents(SQLiteDatabase db) {
+        if(!isTableEmpty(db, "STUDENT"))
+            return;
 
         ContentValues values = new ContentValues();
         for (int i = 0; i < 15; i++){
@@ -74,18 +74,18 @@ public class ClassRepo extends SQLiteOpenHelper {
             values.put("name", generateName());
             values.put("dob", "31/12/2003");
             values.put("classid", new Random().nextInt(5));
-            mDatabase.insert("STUDENT", null, values);
+            db.insert("STUDENT", null, values);
         }
     }
 
-    public void updateClassStudentCount() {
+    public void updateClassStudentCount(SQLiteDatabase db) {
         String queryClass = "SELECT * FROM CLASS";
-        Cursor cursorClass = mDatabase.rawQuery(queryClass, null);
+        Cursor cursorClass = db.rawQuery(queryClass, null);
 
         // Kiểm tra tồn tại & lấy index của classid
         int idIndex = cursorClass.getColumnIndex("classid");
         if (idIndex < 0){
-            Log.e("onCreate repo", "Column 'name' not found in cursor");
+            Toast.makeText(context, "Column 'name' not found in cursor", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -96,7 +96,7 @@ public class ClassRepo extends SQLiteOpenHelper {
             // Tính toán số lượng sinh viên của lớp học
             String queryStudent = "SELECT COUNT(*) FROM STUDENT WHERE classid = ?";
             String[] selectionArgs = { String.valueOf(classId) };
-            Cursor cursorStudent = mDatabase.rawQuery(queryStudent, selectionArgs);
+            Cursor cursorStudent = db.rawQuery(queryStudent, selectionArgs);
             int studentCount = 0;
             if (cursorStudent.moveToFirst()) {
                 studentCount = cursorStudent.getInt(0);
@@ -108,36 +108,40 @@ public class ClassRepo extends SQLiteOpenHelper {
             values.put("students", studentCount);
             String whereClause = "classid = ?";
             String[] whereArgs = { String.valueOf(classId) };
+            db.update("CLASS", values, whereClause, whereArgs);
         }
         cursorClass.close();
     }
 
-    private void generateClasses() {
-//        if(isTableEmpty(mDatabase, "CLASS")){
-            ContentValues values = new ContentValues();
-            values.putNull("classid");
-            values.put("classname", "KTPM2021");
-            values.put("students", 0);
-            mDatabase.insert("CLASS", null, values);
+    private void generateClasses(SQLiteDatabase db) {
+        if(!isTableEmpty(db, "CLASS")){
+            return;
+        }
 
-            values.clear();
-            values.putNull("classid");
-            values.put("classname", "KHMT2021");
-            values.put("students", 0);
-            mDatabase.insert("CLASS", null, values);
+        ContentValues values = new ContentValues();
+        values.putNull("classid");
+        values.put("classname", "KTPM2021");
+        values.put("students", 0);
+        db.insert("CLASS", null, values);
 
-            values.clear();
-            values.putNull("classid");
-            values.put("classname", "KTMT2021");
-            values.put("students", 0);
-            mDatabase.insert("CLASS", null, values);
+        values.clear();
+        values.putNull("classid");
+        values.put("classname", "KHMT2021");
+        values.put("students", 0);
+        db.insert("CLASS", null, values);
 
-            values.clear();
-            values.putNull("classid");
-            values.put("classname", "TMDT2021");
-            values.put("students", 0);
-            mDatabase.insert("CLASS", null, values);
-//        }
+        values.clear();
+        values.putNull("classid");
+        values.put("classname", "KTMT2021");
+        values.put("students", 0);
+        db.insert("CLASS", null, values);
+
+        values.clear();
+        values.putNull("classid");
+        values.put("classname", "TMDT2021");
+        values.put("students", 0);
+        db.insert("CLASS", null, values);
+
     }
 
     @Override
@@ -147,12 +151,12 @@ public class ClassRepo extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void generateUsers() {
+    public void generateUsers(SQLiteDatabase db) {
+        if(!isTableEmpty(db, "USER"))
+            return;
+
         userList.add(new User("admin", "121212"));
         userList.add(new User("student", "121212"));
-
-//        if(!isTableEmpty(mDatabase, "USER"))
-//            return;
 
         ContentValues values = new ContentValues();
 
@@ -160,11 +164,13 @@ public class ClassRepo extends SQLiteOpenHelper {
             values.clear();
             values.put("username", userList.get(i).getUsername());
             values.put("password", userList.get(i).getPassword());
-            mDatabase.insert("USER", null, values);
+            db.insert("USER", null, values);
         }
     }
 
     public User getUserByUsername(String username){
+        SQLiteDatabase mDatabase = getReadableDatabase();
+
         String[] projection = {
                 "username",
                 "password",
@@ -177,8 +183,11 @@ public class ClassRepo extends SQLiteOpenHelper {
         if(cursor.moveToFirst()){
             String password = cursor.getString(1);
             mDatabase.close();
+            cursor.close();
             return new User(username, password);
         }
+        mDatabase.close();
+        cursor.close();
         return null;
     }
 

@@ -60,9 +60,9 @@ public class CLassesAdapter extends BaseAdapter {
         }
 
         ClassRoom classRoom = classRoomList.get(i);
-        holder.tvId.setText(classRoom.getClassId());
+        holder.tvId.setText(String.valueOf(classRoom.getClassId()));
         holder.tvName.setText(classRoom.getClassName());
-        holder.tvStudents.setText(classRoom.getStudents());
+        holder.tvStudents.setText(String.valueOf(classRoom.getStudents()));
 
         return view;
     }

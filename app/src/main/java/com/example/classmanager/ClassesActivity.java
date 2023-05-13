@@ -25,6 +25,8 @@ public class ClassesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classes);
 
+        classList = new ArrayList<>();
+        
         // lay danh sach lop trong DB
         classRepo = ClassRepo.getInstance(this);
         SQLiteDatabase db = classRepo.getReadableDatabase();
