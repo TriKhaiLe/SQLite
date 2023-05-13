@@ -5,15 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class ClassRepo extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Todo.db";
+    public static final int DATABASE_VERSION = 4;
+    public static final String DATABASE_NAME = "ClassRoom.db";
     public static final String SQL_CREATE_TABLE_USER
             = "CREATE TABLE IF NOT EXISTS USER (username varchar(50) primary key, " +
             "password varchar(50)" +
@@ -35,7 +34,7 @@ public class ClassRepo extends SQLiteOpenHelper {
             "foreign key (classid) references CLASS (classid) " +
             ")";
     private static ClassRepo instance;
-    private Context context;
+    private final Context context;
     ArrayList<User> userList;
 
     public ClassRepo(Context context) {
@@ -73,7 +72,7 @@ public class ClassRepo extends SQLiteOpenHelper {
             values.putNull("studentid");
             values.put("name", generateName());
             values.put("dob", "31/12/2003");
-            values.put("classid", new Random().nextInt(5));
+            values.put("classid", new Random().nextInt(4) + 1);
             db.insert("STUDENT", null, values);
         }
     }
@@ -147,7 +146,7 @@ public class ClassRepo extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion,
                           int newVersion) {
-//        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+//        context.deleteDatabase(DATABASE_NAME);
         onCreate(db);
     }
 
@@ -167,7 +166,6 @@ public class ClassRepo extends SQLiteOpenHelper {
             db.insert("USER", null, values);
         }
     }
-
     public User getUserByUsername(String username){
         SQLiteDatabase mDatabase = getReadableDatabase();
 
