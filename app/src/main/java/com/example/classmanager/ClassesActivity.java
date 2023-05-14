@@ -6,19 +6,37 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
+import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.dao.UserDao;
+import com.example.entities.User;
+import com.example.repositories.ClassRoomRepository;
+import com.example.repositories.UserRepository;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+
+@AndroidEntryPoint
 public class ClassesActivity extends AppCompatActivity {
     ArrayList<ClassRoom> classList;
     ListView listView;
     CLassesAdapter adapter;
     ClassRepo classRepo;
+
+    @Inject
+    UserRepository userRepository;
+
+    @Inject
+    ClassRoomRepository classRoomRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +44,16 @@ public class ClassesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_classes);
 
         classList = new ArrayList<>();
+
+        userRepository.getAllUsers()
+                .subscribe(result -> {
+                    Log.i("abc",String.valueOf(result.size()));
+                }, throwable -> {});
+
+
+        classRoomRepository.getAllClassRoom().subscribe(result -> {
+
+        }, throwable -> {});
         
         // lay danh sach lop trong DB
         classRepo = ClassRepo.getInstance(this);
