@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ClassRepo extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "ClassRoom.db";
     public static final String SQL_CREATE_TABLE_USER
             = "CREATE TABLE IF NOT EXISTS USER (username varchar(50) primary key, " +

@@ -6,18 +6,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ClassesActivity extends AppCompatActivity {
+public class ClassRoomActivity extends AppCompatActivity {
     ArrayList<ClassRoom> classList;
     ListView listView;
-    CLassesAdapter adapter;
+    ClassRoomAdapter adapter;
     ClassRepo classRepo;
 
     @Override
@@ -26,7 +24,7 @@ public class ClassesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_classes);
 
         classList = new ArrayList<>();
-        
+
         // lay danh sach lop trong DB
         classRepo = ClassRepo.getInstance(this);
         SQLiteDatabase db = classRepo.getReadableDatabase();
@@ -40,12 +38,11 @@ public class ClassesActivity extends AppCompatActivity {
                     cursor.getString(1),
                     cursor.getInt(2)));
         }
-
         cursor.close();
 
         // set adapter
         listView = (ListView) findViewById(R.id.lv_classList);
-        adapter = new CLassesAdapter(this, R.layout.class_info_layout, classList);
+        adapter = new ClassRoomAdapter(this, R.layout.class_info_layout, classList);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
@@ -61,9 +58,12 @@ public class ClassesActivity extends AppCompatActivity {
             textView = view.findViewById(R.id.tv_students);
             String students = textView.getText().toString();
 
-            ClassRoom classRoom = new ClassRoom(Integer.parseInt(classid), classname, Integer.parseInt(students));
+            ClassRoom classRoom = new ClassRoom(
+                    Integer.parseInt(classid),
+                    classname,
+                    Integer.parseInt(students));
 
-            Intent intent = new Intent(ClassesActivity.this, StudentsActivity.class);
+            Intent intent = new Intent(ClassRoomActivity.this, StudentActivity.class);
             intent.putExtra("selected_class", (Serializable) classRoom);
             startActivity(intent);
         });

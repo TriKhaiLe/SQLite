@@ -28,6 +28,7 @@
                 android:text="Tài khoản"
                 android:textSize="16dp"
                 android:textStyle="bold"
+                android:textColor="@color/black"
                 />
 
             <EditText
@@ -40,7 +41,9 @@
                 android:hint="Nhập tài khoản"
                 android:text="admin"
                 android:background="@drawable/et_round_border"
-                android:inputType="text" />
+                android:inputType="text"
+                android:textColor="@color/black"
+                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -49,6 +52,8 @@
                 android:text="Mật khẩu"
                 android:textSize="16dp"
                 android:textStyle="bold"
+                android:textColor="@color/black"
+
                 />
 
 
@@ -62,7 +67,9 @@
                 android:hint="Nhập mật khẩu"
                 android:background="@drawable/et_round_border"
                 android:inputType="textPassword"
-                android:text="121212"/>
+                android:text="121212"
+                android:textColor="@color/black"
+                />
 
             <TextView
                 android:layout_width="wrap_content"

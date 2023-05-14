@@ -3,14 +3,11 @@ package com.example.classmanager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
@@ -39,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
             if(user != null && Objects.equals(user.getPassword(), input2.getText().toString())){
 
                 // hien thi ClassesActivity
-                Intent intent = new Intent(LoginActivity.this, ClassesActivity.class);
+                Intent intent = new Intent(LoginActivity.this, ClassRoomActivity.class);
                 startActivity(intent);
 
             }

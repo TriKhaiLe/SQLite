@@ -9,20 +9,20 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class CLassesAdapter extends BaseAdapter {
+public class StudentAdapter extends BaseAdapter {
     Context context;
     int layout;
-    List<ClassRoom> classRoomList;
+    List<Student> studentList;
 
-    public CLassesAdapter(Context context, int layout, List<ClassRoom> classRoomList) {
+    public StudentAdapter(Context context, int layout, List<Student> studentList) {
         this.context = context;
         this.layout = layout;
-        this.classRoomList = classRoomList;
+        this.studentList = studentList;
     }
 
     @Override
     public int getCount() {
-        return classRoomList.size();
+        return studentList.size();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CLassesAdapter extends BaseAdapter {
     private class ViewHolder{
         TextView tvId;
         TextView tvName;
-        TextView tvStudents;
+        TextView tvDob;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CLassesAdapter extends BaseAdapter {
 
             holder.tvId = view.findViewById(R.id.tv_id);
             holder.tvName = view.findViewById(R.id.tv_name);
-            holder.tvStudents = view.findViewById(R.id.tv_students);
+            holder.tvDob = view.findViewById(R.id.tv_dob);
 
             view.setTag(holder);
         }
@@ -59,10 +59,10 @@ public class CLassesAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
 
-        ClassRoom classRoom = classRoomList.get(i);
-        holder.tvId.setText(String.valueOf(classRoom.getClassId()));
-        holder.tvName.setText(classRoom.getClassName());
-        holder.tvStudents.setText(String.valueOf(classRoom.getStudents()));
+        Student student = studentList.get(i);
+        holder.tvId.setText(String.valueOf(student.getStudentId()));
+        holder.tvName.setText(student.getName());
+        holder.tvDob.setText(student.getDob());
 
         return view;
     }
